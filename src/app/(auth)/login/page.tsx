@@ -44,7 +44,7 @@ const page: FC<pageProps> = ({}) => {
 	C156.404,491.308,132.296,501.292,106.658,501.292z"
         />
         <path
-          style={{ fill: "#E6E9ED;" }}
+          style={{ fill: "#E6E9ED" }}
           d="M480.724,31.233c-20.811-20.827-48.121-31.232-75.4-31.232c-27.311,0-54.59,10.405-75.432,31.232
 	l-298.65,298.65c-41.652,41.652-41.652,109.179,0,150.832c20.826,20.826,48.121,31.247,75.416,31.247s54.59-10.421,75.416-31.247
 	l298.65-298.635C522.377,140.428,522.377,72.886,480.724,31.233z M465.662,166.989L166.998,465.638
@@ -67,7 +67,7 @@ const page: FC<pageProps> = ({}) => {
 	L166.998,465.638z"
         />
       </svg>
-      <div className="w-full flex flex-col items-center max-w-md space-y-8">
+      <div className="w-full flex flex-col items-center max-w-lg space-y-8 shadow-[3px_20px_30px_-15px_rgba(0,0,0,0.3)] py-16 px-12 rounded-xl border border-gray-100">
         <div className="flex flex-col items-center gap-8">
           <div className="font-bold text-7xl"><span className="text-red-600">Red</span><span className="text-slate-300">PillChat</span></div>
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tighter text-gray-900">
