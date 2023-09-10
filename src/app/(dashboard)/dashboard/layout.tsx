@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
+import SignOutButton from "@/components/SignOutButton";
 
 interface LayoutProps {
   children: ReactNode;
@@ -23,7 +24,6 @@ const sideBarOptions: SideBarOption[] = [
 
 const Layout = async ({ children }: LayoutProps) => {
   const session = await getServerSession(authOptions);
-  console.log(session)
   if (!session) notFound();
   return (
     <div className="w-full flex h-screen">
@@ -84,6 +84,7 @@ const Layout = async ({ children }: LayoutProps) => {
                   </span>
                 </div>
               </div>
+              <SignOutButton className="h-full aspect-square" />
             </li>
           </ul>
         </nav>
