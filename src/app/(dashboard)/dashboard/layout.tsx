@@ -6,6 +6,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
 import SignOutButton from "@/components/SignOutButton";
+import FriendRequestSideBarOptions from "@/components/FriendRequestSideBarOptions";
 
 interface LayoutProps {
   children: ReactNode;
@@ -62,6 +63,10 @@ const Layout = async ({ children }: LayoutProps) => {
                   );
                 })}
               </ul>
+            </li>
+
+            <li>
+              <FriendRequestSideBarOptions sessionId={session.user.id} initialUnseenRequestsCount={} />
             </li>
 
             <li className="-mx-6 mt-auto flex items-center">
