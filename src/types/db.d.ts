@@ -4,3 +4,14 @@ interface User {
   image: string
   id: string
 }
+
+interface Chat {
+  id: string
+  messages: Message[]
+}
+
+interface FriendRequest {
+  id: string
+  senderId: string
+  recieverId: string
+}
