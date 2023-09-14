@@ -1,38 +1,39 @@
-import { Icon, Icons } from "@/components/Icons";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import Link from "next/link";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { ReactNode } from "react";
-import SignOutButton from "@/components/SignOutButton";
-import FriendRequestSideBarOptions from "@/components/FriendRequestSideBarOptions";
-import { fetchRedis } from "@/helpers/redis";
+import { Icon, Icons } from '@/components/Icons'
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import Link from 'next/link'
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import { ReactNode } from 'react'
+import SignOutButton from '@/components/SignOutButton'
+import FriendRequestSideBarOptions from '@/components/FriendRequestSideBarOptions'
+import { fetchRedis } from '@/helpers/redis'
 
 interface LayoutProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 interface SideBarOption {
-  id: number;
-  name: string;
-  href: string;
-  Icon: Icon;
+  id: number
+  name: string
+  href: string
+  Icon: Icon
 }
 
 const sideBarOptions: SideBarOption[] = [
-  { id: 1, name: "Add frind", href: "/dashboard/add", Icon: "UserPlus" },
-];
+  { id: 1, name: 'Add frind', href: '/dashboard/add', Icon: 'UserPlus' },
+]
 
 const Layout = async ({ children }: LayoutProps) => {
-  const session = await getServerSession(authOptions);
-  if (!session) notFound();
+  const session = await getServerSession(authOptions)
+  if (!session) notFound()
 
-
-  const unseenFriendRequestsCount = (await fetchRedis(
-    "smembers",
-    `user:${session.user.id}:incoming_friend_requests`
-  ) as User[]).length;
+  const unseenFriendRequestsCount = (
+    (await fetchRedis(
+      'smembers',
+      `user:${session.user.id}:incoming_friend_requests`
+    )) as User[]
+  ).length
 
   return (
     <div className="w-full flex h-screen">
@@ -54,7 +55,7 @@ const Layout = async ({ children }: LayoutProps) => {
 
               <ul role="list" className="-mx-2 mt-2 space-y-1">
                 {sideBarOptions.map((option) => {
-                  const Icon = Icons[option.Icon];
+                  const Icon = Icons[option.Icon]
 
                   return (
                     <li key={option.id}>
@@ -68,7 +69,7 @@ const Layout = async ({ children }: LayoutProps) => {
                         <span className="truncate">{option.name}</span>
                       </Link>
                     </li>
-                  );
+                  )
                 })}
               </ul>
             </li>
@@ -87,7 +88,7 @@ const Layout = async ({ children }: LayoutProps) => {
                     fill
                     referrerPolicy="no-referrer"
                     className="h-4 w-4 rounded-full"
-                    src={session.user.image || ""}
+                    src={session.user.image || ''}
                     alt="Your profile picture"
                   />
                 </div>
@@ -107,7 +108,7 @@ const Layout = async ({ children }: LayoutProps) => {
       </div>
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

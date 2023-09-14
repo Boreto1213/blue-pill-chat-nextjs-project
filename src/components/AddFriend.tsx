@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import { FC, useState } from "react";
-import Button from "./ui/Button";
-import { addFriendValidator } from "@/lib/validators/add-fiend";
-import axios, { AxiosError } from "axios";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { FC, useState } from 'react'
+import Button from './ui/Button'
+import { addFriendValidator } from '@/lib/validators/add-fiend'
+import axios, { AxiosError } from 'axios'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 interface AddFriendProps {}
 
-type FormData = z.infer<typeof addFriendValidator>;
+type FormData = z.infer<typeof addFriendValidator>
 
 const AddFriend: FC<AddFriendProps> = ({}) => {
-  const [showSuccessState, setShowSuccessState] = useState<boolean>(false);
+  const [showSuccessState, setShowSuccessState] = useState<boolean>(false)
   const {
     register,
     handleSubmit,
@@ -21,35 +21,35 @@ const AddFriend: FC<AddFriendProps> = ({}) => {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(addFriendValidator),
-  });
+  })
 
   const addFriend = async (email: string) => {
     try {
-      const validatedEmail = addFriendValidator.parse({ email });
+      const validatedEmail = addFriendValidator.parse({ email })
 
-      await axios.post("/api/friends/add", {
+      await axios.post('/api/friends/add', {
         email: validatedEmail,
-      });
+      })
 
-      setShowSuccessState(true);
+      setShowSuccessState(true)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setError("email", { message: error.message });
-        return;
+        setError('email', { message: error.message })
+        return
       }
 
       if (error instanceof AxiosError) {
-        setError("email", { message: error.response?.data });
-        return;
+        setError('email', { message: error.response?.data })
+        return
       }
 
-      setError("email", { message: "Something went wrrong." });
+      setError('email', { message: 'Something went wrrong.' })
     }
-  };
+  }
 
   const onSubmit = (data: FormData) => {
-    addFriend(data.email);
-  };
+    addFriend(data.email)
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-sm">
@@ -61,7 +61,7 @@ const AddFriend: FC<AddFriendProps> = ({}) => {
       </label>
       <div className="mt-2 flex gap-4">
         <input
-          {...register("email")}
+          {...register('email')}
           type="text"
           placeholder="you@example.com"
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-none ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -74,7 +74,7 @@ const AddFriend: FC<AddFriendProps> = ({}) => {
         <p className="mt-1 text-sm text-green-600">Friend request sent</p>
       ) : null}
     </form>
-  );
-};
+  )
+}
 
-export default AddFriend;
+export default AddFriend
