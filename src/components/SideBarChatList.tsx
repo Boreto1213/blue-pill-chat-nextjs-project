@@ -1,19 +1,68 @@
 'use client'
 
-import { chatHrefConstructor } from '@/lib/utils'
+import { pusherClient } from '@/lib/pusher'
+import { chatHrefConstructor, toPusherKey } from '@/lib/utils'
 import { Message } from '@/lib/validators/message'
 import { usePathname, useRouter } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import UnseenChatToast from './UnseenChatToast'
 
 interface SideBarChatListProps {
   friends: User[]
   sessionId: string
 }
 
+interface ExtendedMessage extends Message {
+  senderImg: string
+  senderName: string
+}
+
 const SideBarChatList: FC<SideBarChatListProps> = ({ friends, sessionId }) => {
   const router = useRouter()
   const pathName = usePathname()
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([])
+  const [activeChats, setActiveChats] = useState<User[]>(friends)
+
+  useEffect(() => {
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`))
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`))
+
+    const newFriendHandler = (newFriend: User) => {
+      setActiveChats((prev) => [...prev, newFriend])
+    }
+
+    const chatHandler = (message: ExtendedMessage) => {
+      const shouldNotify =
+        pathName !==
+        `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`
+
+      if (!shouldNotify) return
+
+      toast.custom((t) => (
+        <UnseenChatToast
+          t={t}
+          sessionId={sessionId}
+          senderId={message.senderId}
+          senderImg={message.senderImg}
+          senderMessage={message.text}
+          senderName={message.senderName}
+        />
+      ))
+
+      setUnseenMessages((prev) => [...prev, message])
+    }
+
+    pusherClient.bind('new_message', chatHandler)
+    pusherClient.bind('new_friend', newFriendHandler)
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`))
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`))
+      pusherClient.unbind('new_message', chatHandler)
+      pusherClient.unbind('new_friend', newFriendHandler)
+    }
+  }, [pathName, sessionId, router])
 
   useEffect(() => {
     if (pathName.includes('chat')) {
@@ -40,7 +89,7 @@ const SideBarChatList: FC<SideBarChatListProps> = ({ friends, sessionId }) => {
             >
               {friend.email.split('@')[0]}
               {unSeenMessagesCount > 0 ? (
-                <div className='bg-indigo-600 font-medium text-xs w-4 h-4 rounded-full flex justify-center items-center'>
+                <div className='bg-indigo-600 text-white font-medium text-xs w-4 h-4 rounded-full flex justify-center items-center'>
                   {unSeenMessagesCount}
                 </div>
               ) : null}

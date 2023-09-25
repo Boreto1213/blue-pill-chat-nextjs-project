@@ -1,6 +1,8 @@
 import { fetchRedis } from '@/helpers/redis'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { pusherServer } from '@/lib/pusher'
+import { toPusherKey } from '@/lib/utils'
 import { addFriendValidator } from '@/lib/validators/add-fiend'
 import { getServerSession } from 'next-auth'
 import { ZodError } from 'zod'
@@ -54,6 +56,13 @@ export async function POST(req: Request) {
     }
 
     // Valid request
+
+    pusherServer.trigger(
+      toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
+      'incoming_friend_requests',
+      { senderId: session.user.id, senderEmail: session.user.email }
+    )
+
     db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id)
 
     return new Response('OK', { status: 200 })
@@ -61,6 +70,8 @@ export async function POST(req: Request) {
     if (error instanceof ZodError) {
       return new Response('Invalid requst payload', { status: 422 })
     }
+
+    console.log(error)
 
     return new Response('Invalid request', { status: 400 })
   }

@@ -20,12 +20,12 @@ const page = async ({}) => {
 
       return { senderEmail: senderParsed.email, senderId }
     })
-  )) as IncomingFriendRequests[]
+  )) as IncomingFriendRequest[]
 
   return (
-    <main className="pt-8">
-      <h1 className="font-bold text-5xl mb-8">Friend requests</h1>
-      <div className="flex flex-col gap-4">
+    <main className='pt-8'>
+      <h1 className='font-bold text-5xl mb-8'>Friend requests</h1>
+      <div className='flex flex-col gap-4'>
         <FriendRequests
           incomingFriendRequests={incomingFriendRequests}
           sessionId={session.user.id}

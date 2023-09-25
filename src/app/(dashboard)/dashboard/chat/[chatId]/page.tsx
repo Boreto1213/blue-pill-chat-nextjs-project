@@ -1,3 +1,4 @@
+import ChatInput from '@/components/ChatInput'
 import Messages from '@/components/Messages'
 import { fetchRedis } from '@/helpers/redis'
 import { authOptions } from '@/lib/auth'
@@ -44,12 +45,16 @@ const page = async ({ params }: PageProps) => {
   if (user.id !== userId1 && user.id !== userId2) notFound()
 
   const chatPartnerId = user.id === userId1 ? userId2 : userId1
-  const chatPartner = (await db.get(`user:${chatPartnerId}`)) as User
+  const chatPartnerRaw = (await fetchRedis(
+    'get',
+    `user:${chatPartnerId}`
+  )) as string
+  const chatPartner = JSON.parse(chatPartnerRaw) as User
   const initialMessages = await getChatMessages(chatId)
 
   return (
     <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh)-6rem]'>
-      <div className='flex sm:items-center justify-between py-4 border-b-2 border-gray-200'>
+      <div className='flex sm:items-center justify-between py-3 border-b-2 border-gray-200'>
         <div className='relative flex items-center space-x-4'>
           <div className='relative '>
             <div className='relative w-8 sm:w-12 h-8 sm:h-12'>
@@ -74,7 +79,14 @@ const page = async ({ params }: PageProps) => {
         </div>
       </div>
 
-      <Messages />
+      <Messages
+        initialMessages={initialMessages}
+        sessionId={session.user.id}
+        sessionImg={session.user.image}
+        chatPartner={chatPartner}
+        chatId={chatId}
+      />
+      <ChatInput chatId={chatId} chatPartner={chatPartner} />
     </div>
   )
 }

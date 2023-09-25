@@ -6,7 +6,7 @@ export default withAuth(
   async function middleware(req) {
     const pathName = req.nextUrl.pathname
 
-    const isAuth = await getToken({ req })
+    const isAuth = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
     const isLoginPage = pathName.startsWith('/login')
 
     const sensisitiveRoutes = ['/dashboard']
