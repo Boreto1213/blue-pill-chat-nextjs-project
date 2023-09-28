@@ -1,7 +1,8 @@
 import { LucideProps, UserPlus } from 'lucide-react'
+import { ReactNode } from 'react'
 
 export const Icons = {
-  Logo: (props: LucideProps) => (
+  Logo: (props: LucideProps): ReactNode => (
     <svg
       {...props}
       height="750px"
